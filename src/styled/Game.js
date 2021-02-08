@@ -18,9 +18,16 @@ export const StyledTimer = styled.p`
     grid-column: 3/4;
 `;
 
-export const StyledCharacter = styled.p`
-    font-size: 5rem;
+export const ButtonGrid = styled.div`
+    font-size: 2rem;
     grid-row: 2;
     grid-column: 1/4;
     text-align: center;
+`;
+
+export const ButtonRow = styled.div`
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    height: calc(50px + 15%);
 `;
