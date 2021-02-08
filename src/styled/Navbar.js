@@ -30,6 +30,5 @@ export const StyledLink = styled(Link)`
 
     &:hover {
         color: #e16365;
-        cursor: pointer;
     }
 `
