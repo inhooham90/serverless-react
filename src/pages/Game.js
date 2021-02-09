@@ -1,31 +1,56 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StyledGame, StyledScore, ButtonGrid, StyledTimer, ButtonRow } from '../styled/Game';
 
 
 export default function Game({ history }) {
     const [state, setState] = useState({ score: 0, number: Math.floor(Math.random() * 9) + 1 });
+    const [timeLimit, setTimeLimit] = useState(1400);
+    const [time, setTimer] = useState(timeLimit);
+
     let { number, score } = state;
 
-    const keyHash = {
-        'w': 1, 
-        'e': 2,
-        'r': 3,
-        's': 4,
-        'd': 5,
-        'f': 6,
-        'x': 7,
-        'c': 8,
-        'v': 9,
-    };
 
     // const MAX_SECONDS = 5;
     // const [ms, setMs] = useState(0);
     // const [seconds, setSeconds] = useState(MAX_SECONDS);
 
-    const keyUpHandler = (e) => {
-        console.log(keyHash[e.key], number)
-        checkButton(keyHash[e.key]);
+    const resetTimer = useCallback(
+        () => {
+            setState({ score: score + 1, number: Math.floor(Math.random() * 9) + 1});
+            setTimer(timeLimit);
+            setTimeLimit(1400 - (25 * Math.min(50, score)));
+        },
+        [timeLimit, score],
+    )
+
+    const checkButton = num => {
+        if(num !== number) {
+            history.push("/gameover");
+        } else {
+            resetTimer();
+        };
     };
+
+    const keyUpHandler = useCallback((e) => {
+        let keys = {
+            'w': 1, 
+            'e': 2,
+            'r': 3,
+            's': 4,
+            'd': 5,
+            'f': 6,
+            'x': 7,
+            'c': 8,
+            'v': 9,
+        };
+
+        if(keys[e.key] !== number) {
+            history.push("/gameover");
+        } else {
+            resetTimer();
+        };
+
+    },[resetTimer, number, history]);
 
     useEffect(() => {
         document.addEventListener('keyup', keyUpHandler);
@@ -33,26 +58,18 @@ export default function Game({ history }) {
         return () => {
             document.removeEventListener('keyup', keyUpHandler);
         }
-    }, []);
+    }, [keyUpHandler]);
 
-    // useEffect(() => {
-    //     const currentTime = new Date();
-    //     const interval = setInterval(() => updateTime(currentTime), 1);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTimer((prevTime) => prevTime - 100);
+        }, 100);
 
-    //     return () => {
-    //         clearInterval(interval);
-    //     }
-    // }, []);
-
-    // const updateTime = startTime => {
-    //     const endDate = new Date();
-    //     const msPassedStr = (endDate.getTime() - startTime.getTime()).toString();
-
-    //     const formattedMsString = ('0000' + msPassedStr).slice(-5);
-
-    //     const updatedSeconds = MAX_SECONDS - parseInt(formattedMsString.substring(0,2) - 1);
-    //     console.log(updatedSeconds);
-    // };
+        if(time < 0) history.push("/gameover");
+        return () => {
+            clearInterval(interval);
+        }
+    }, [time, history]);
 
     const target = {
         backgroundColor: "#e35664",
@@ -73,14 +90,6 @@ export default function Game({ history }) {
         alignItems: "center",
         border: "2px solid #ffffff"
     };
-
-    const checkButton = num => {
-        if(num !== number) {
-            // history.push("/gameover");
-        } else {
-            setState({ score: score + 1, number: Math.floor(Math.random() * 9) + 1});
-        }
-    }
 
     return (
         <StyledGame>
@@ -147,7 +156,7 @@ export default function Game({ history }) {
                     </div>
                 </ButtonRow>
             </ButtonGrid>
-            <StyledTimer>Time: 0s</StyledTimer>
+            <StyledTimer>Difficulty: Easy</StyledTimer>
         </StyledGame>
     )
 }
