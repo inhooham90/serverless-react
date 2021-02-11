@@ -1,26 +1,28 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useScore } from '../contexts/ScoreContext';
 import { StyledGame, StyledScore, ButtonGrid, StyledTimer, ButtonRow } from '../styled/Game';
 
 
 export default function Game({ history }) {
-    const [state, setState] = useState({ score: 0, number: Math.floor(Math.random() * 9) + 1 });
-    const [timeLimit, setTimeLimit] = useState(1400);
-    const [time, setTimer] = useState(timeLimit);
+    const [number, setNum] = useState(Math.floor(Math.random() * 9) + 1);
+    const [time, setTimer] = useState(1000);
+    const [score, setScore] = useScore();
 
-    let { number, score } = state;
+     useEffect(() => {
+        setScore(0);
+        return () => {
 
-
-    // const MAX_SECONDS = 5;
-    // const [ms, setMs] = useState(0);
-    // const [seconds, setSeconds] = useState(MAX_SECONDS);
+        };
+    }, [setScore]);
 
     const resetTimer = useCallback(
         () => {
-            setState({ score: score + 1, number: Math.floor(Math.random() * 9) + 1});
-            setTimer(timeLimit);
-            setTimeLimit(1400 - (25 * Math.min(50, score)));
+            setNum(Math.floor(Math.random() * 9) + 1);
+            setScore(score + 1);
+            setTimer(time + (700 - (7 * Math.min(90, score))));
+            // setTimeLimit(1400 - (25 * Math.min(50, score)));
         },
-        [timeLimit, score],
+        [time, score, setScore],
     )
 
     const checkButton = num => {
@@ -54,22 +56,17 @@ export default function Game({ history }) {
 
     useEffect(() => {
         document.addEventListener('keyup', keyUpHandler);
-
-        return () => {
-            document.removeEventListener('keyup', keyUpHandler);
-        }
-    }, [keyUpHandler]);
-
-    useEffect(() => {
         const interval = setInterval(() => {
             setTimer((prevTime) => prevTime - 100);
         }, 100);
 
         if(time < 0) history.push("/gameover");
+
         return () => {
+            document.removeEventListener('keyup', keyUpHandler);
             clearInterval(interval);
         }
-    }, [time, history]);
+    }, [keyUpHandler, time, history]);
 
     const target = {
         backgroundColor: "#e35664",
@@ -156,7 +153,7 @@ export default function Game({ history }) {
                     </div>
                 </ButtonRow>
             </ButtonGrid>
-            <StyledTimer>Difficulty: Easy</StyledTimer>
+            <StyledTimer>Time: {time}ms</StyledTimer>
         </StyledGame>
     )
 }

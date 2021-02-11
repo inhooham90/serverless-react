@@ -8,7 +8,7 @@ export default function Navbar() {
         <StyledNavbar>
             <StyledNavBrand>
                 <Link to='/'>
-                    Game <Accent>Title</Accent> Here
+                    <Accent>Reaction Speed</Accent> Game
                 </Link>
             </StyledNavBrand>
             <StyledNavItems>

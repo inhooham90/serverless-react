@@ -1,9 +1,20 @@
-import React from 'react'
+import React from 'react';
+import { useScore } from '../contexts/ScoreContext';
+import { StyledLink } from '../styled/Navbar';
 
-export default function GameOver() {
+export default function GameOver({ history }) {
+    const [score] = useScore();
+
+    if (score === -1) {
+        history.push('/');
+    };
+
     return (
         <div>
             GameOver
+            <p>{score}</p>
+            <StyledLink to="/">Home</StyledLink>
+            <StyledLink to="/game">Play Again</StyledLink>
         </div>
     )
 }

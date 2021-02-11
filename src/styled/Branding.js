@@ -8,7 +8,9 @@ export const StyledTitle = styled.h1`
 `;
 
 export const Accent = styled.span`
-    color: #e16365
+    color: #eb4c34;
+    font-weight: 600;
+    
 `;
 
 export const Strong = styled.strong`
