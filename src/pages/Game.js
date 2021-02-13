@@ -6,23 +6,37 @@ import { StyledGame, StyledScore, ButtonGrid, StyledTimer, ButtonRow } from '../
 export default function Game({ history }) {
     const [number, setNum] = useState(Math.floor(Math.random() * 9) + 1);
     const [time, setTimer] = useState(1000);
-    const [score, setScore] = useScore();
+    const [result, setScore] = useScore();
 
      useEffect(() => {
-        setScore(0);
+        setScore({
+            score: 0,
+            sum: 1000,
+            quickest: 1000
+        });
+
         return () => {
 
         };
     }, [setScore]);
 
+    
     const resetTimer = useCallback(
         () => {
+            const { score, sum } = result;
+
+            let timeBonus = 700 - (7 * Math.min(90, score));
+
             setNum(Math.floor(Math.random() * 9) + 1);
-            setScore(score + 1);
-            setTimer(time + (700 - (7 * Math.min(90, score))));
-            // setTimeLimit(1400 - (25 * Math.min(50, score)));
+            setScore({
+                score: score + 1,
+                sum: sum + timeBonus,
+                quickest: timeBonus
+            });
+            setTimer(time + timeBonus);
+            console.log(sum)
         },
-        [time, score, setScore],
+        [time, result, setScore],
     )
 
     const checkButton = num => {
@@ -57,8 +71,8 @@ export default function Game({ history }) {
     useEffect(() => {
         document.addEventListener('keyup', keyUpHandler);
         const interval = setInterval(() => {
-            setTimer((prevTime) => prevTime - 100);
-        }, 100);
+            setTimer((prevTime) => prevTime - 137);
+        }, 123);
 
         if(time < 0) history.push("/gameover");
 
@@ -90,7 +104,7 @@ export default function Game({ history }) {
 
     return (
         <StyledGame>
-            <StyledScore>Score: {score}</StyledScore>
+            <StyledScore>Score: {result.score}</StyledScore>
             <ButtonGrid>
                 <ButtonRow>
                     <div 
