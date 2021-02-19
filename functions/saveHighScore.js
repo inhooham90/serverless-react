@@ -8,7 +8,7 @@ exports.handler = async (event) => {
         };
     };
 
-    const { Score, Name, Quickest, Average } = JSON.parse(event.body);
+    const { Score, Name, Average } = JSON.parse(event.body);
 
     if (!Score || !Name) {
         return {
@@ -18,21 +18,26 @@ exports.handler = async (event) => {
     };
 
     try {
-         const records = await getHighScores(false);
+        const records = await getHighScores(false);
 
         const lowestRecord = records[9];
 
         if (lowestRecord.fields.Score == null || Score > lowestRecord.fields.Score) {
             const updatedRecord = {
                 id: lowestRecord.id,
-                fields: { Name, Score, Quickest, Average }
+                fields: { Name, Score, Average }
             };
             // https://airtable.com/appUTsZhe1wZk7Mak/api/docs#curl/table:highscore:update
             await table.update([updatedRecord]);
 
             return {
                 statusCode: 200,
-                body: JSON.stringify(records)
+                body: JSON.stringify({records, highScore: true})
+            };
+        } else {
+            return {
+                statusCode: 200,
+                body: JSON.stringify({records, highScore: false})
             };
         }
     } catch (err) {

@@ -7,8 +7,7 @@ const ScoreProvider = ({children}) => {
 
     const [result, SetScore] = useState({
         score: -1,
-        sum: 1000,
-        quickest: 1000
+        sum: 1000
     });
 
     return (<ScoreContext.Provider value={[result, SetScore]}>

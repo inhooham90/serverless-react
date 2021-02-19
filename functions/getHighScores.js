@@ -14,6 +14,6 @@ exports.handler = async (event) => {
             body: JSON.stringify({
                 err: 'Failed to query data from Air Table.',
             })
-        }
-    }
+        };
+    };
 };
