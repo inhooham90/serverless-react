@@ -11,18 +11,6 @@ export default function GameOver({ history }) {
 
     let number;
     
-    if (score <= 0) {
-        history.push('/');
-    } else if (0 < score && score < 25) {
-        number = Math.floor(Math.random() * 3)
-    } else if (25 <= score && score < 60) {
-        number = Math.floor(Math.random() * 3) + 3
-    } else if (60 <= score && score < 90) {
-        number = Math.floor(Math.random() * 3) + 6
-    } else if (score > 90) {
-        number = 10;
-    }
-    
     const [msg, setMsg] = useState(MESSAGES[number]);
 
     if (score === -1) {
@@ -30,14 +18,25 @@ export default function GameOver({ history }) {
     }
 
     useEffect(() => {
+        if (score <= 0) {
+            history.push('/');
+        } else if (0 < score && score < 25) {
+            number = Math.floor(Math.random() * 3)
+        } else if (25 <= score && score < 60) {
+            number = Math.floor(Math.random() * 3) + 3
+        } else if (60 <= score && score < 90) {
+            number = Math.floor(Math.random() * 3) + 6
+        } else if (score > 90) {
+            number = 10;
+        }
+
         const saveHighScore = async () => {
             try {
                 const options = {
                     method: "POST",
                     body: JSON.stringify({
                         Name: "James",
-                        Score: score,
-                        Average: average
+                        Score: score
                     })
                 };
                 const res = await fetch('/.netlify/functions/saveHighScore', options);
@@ -52,14 +51,7 @@ export default function GameOver({ history }) {
         }
 
         saveHighScore();
-
-        return () => {
-            setScore({
-                score: 0,
-                sum: 1000
-            });
-        }
-    }, [score, sum]);
+    }, [score, sum, average, setScore]);
 
     return (
         <div>

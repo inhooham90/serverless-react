@@ -10,7 +10,7 @@ exports.handler = async (event) => {
 
     const { Score, Name, Average } = JSON.parse(event.body);
 
-    if (!Score || !Name) {
+    if (Score == null || !Name) {
         return {
             statusCode: 405,
             body: JSON.stringify({err: "Bad request"}),

@@ -23,6 +23,7 @@ export const ButtonGrid = styled.div`
     grid-row: 2;
     grid-column: 1/4;
     text-align: center;
+    min-height: 30vh;
 `;
 
 export const ButtonRow = styled.div`
